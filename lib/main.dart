@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myform/dashboard.dart';
+import 'package:myform/function.dart';
 import 'package:myform/variables.dart';
 import 'package:myform/widget.dart';
 
@@ -43,106 +44,30 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: formKey,
-          child: Column(
-            children: [
-              TextInputWidget(
-                control: nameController,
-                hintText: "Name",
-                labelWidget: Text('Name'),
-                prefixIcn: Icon(Icons.account_circle),
-              ),
-              SizedBox(height: 20),
-              TextInputWidget(
-                control: emailController,
-                hintText: "Email",
-                labelWidget: Text('Email'),
-                prefixIcn: Icon(Icons.mail),
-              ),
-              SizedBox(height: 20),
-
-              PasswordWidget(
-                control: passwordController,
-                // suffixIcn: Icon(Icons.visibility),
-                hintText: "Password",
-                labelWidget: Text('Password'),
-                prefixIcn: Icon(Icons.password),
-              ),
-              SizedBox(height: 20),
-              PasswordWidget(
-                control: confirmPasswordController,
-                // suffixIcn: Icon(Icons.visibility),
-                hintText: "Confirm Password",
-                labelWidget: Text('Confirm Password'),
-                prefixIcn: Icon(Icons.password),
-              ),
-              SizedBox(height: 20),
-              ListTile(
-                minLeadingWidth: double.infinity,
-                minTileHeight: 40,
-                textColor: Colors.red,
-                leading: Radio(
-                  value: 'Male',
-                  groupValue: gender,
-                  onChanged: (value) {
-                    setState(() {
-                      print(value);
-                    });
-                  },
-                ),
-
-                title: Text('Male', style: TextStyle(color: Colors.black)),
-              ),
-              ListTile(
-                minLeadingWidth: double.infinity,
-                minTileHeight: 40,
-                textColor: Colors.red,
-                leading: Radio(
-                  value: 'Male',
-                  groupValue: gender,
-                  onChanged: (value) {
-                    setState(() {
-                      print(value);
-                    });
-                  },
-                ),
-
-                title: Text('Male', style: TextStyle(color: Colors.black)),
-              ),
-              // SizedBox(width: 40),
-              // SizedBox(height: 5),
-              // Dropdo
-              TextButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll(Colors.black),
-                ),
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      '/dashboard',
-                      (route) => true,
-                    );
-                    // Navigator.pushAndRemoveUntil(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => Dashboard()),
-                    //   (Route<dynamic> route) => false,
-                    // );
-                  } else {
-                    print('Not validated');
-                  }
-                },
-                child: Text(
-                  'Submit Form',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
+      body: screenWidget(screen),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: screen,
+        onTap: (value) {
+          setState(() {
+            screen = value;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'Transaction',
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+            label: 'Account',
+          ),
+        ],
       ),
     );
   }

@@ -1,3 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:myform/account.dart';
+import 'package:myform/home.dart';
+import 'package:myform/setting.dart';
+import 'package:myform/transaction.dart';
+
 dynamic validateForm(String value, type) {
   switch (type) {
     case 'Email':
@@ -44,5 +50,22 @@ dynamic validateForm(String value, type) {
     // break;
     default:
       return 'Error';
+  }
+}
+
+Widget screenWidget(int index) {
+  switch (index) {
+    case 0:
+      return Home();
+
+    case 1:
+      return Transaction();
+
+    case 2:
+      return Settings();
+    case 3:
+      return Account();
+    default:
+      return Text('');
   }
 }

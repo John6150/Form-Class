@@ -7,5 +7,6 @@ TextEditingController confirmPasswordController = TextEditingController();
 String gender = 'male';
 
 GlobalKey<FormState> formKey = GlobalKey();
+int screen = 0;
 
 // Map<String, dynamic>
