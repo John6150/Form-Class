@@ -15,6 +15,29 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
+  List<bool> isSelected = [true, false, false, false];
+  String selected = '';
+  bool switchValue = false;
+  bool isChecked = false;
+  String gender = 'Female';
+  TextEditingController dateControl = TextEditingController(
+    text: "Please Select a Date",
+  );
+  final List<String> months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
   void printSomething() {
     showDialog(
       context: context,
@@ -42,213 +65,363 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    // void load() {
+    //   Future.delayed((Duration(seconds: 5)), () {
+    //     print('hi');
+
+    //     setState(() {
+    //       items = [1, 2, 3, 4];
+    //     });
+    //   });
+    // }
+
+    // load();
     return Container(
-      color: Colors.red,
+      color: Colors.white,
       width: double.infinity,
       height: MediaQuery.of(context).size.height,
-      child: Center(
-        child: GridView(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            // mainAxisExtent: 2,
-            crossAxisSpacing: 20,
-            mainAxisSpacing: 20,
+      child: Column(
+        children: [
+          ToggleButtons(
+            selectedColor: Colors.red,
+            color: Colors.black,
+            onPressed: (index) {
+              setState(() {
+                // print(isSelected);
+
+                isSelected = isSelected.map((e) => e = false).toList();
+                isSelected[index] = true;
+              });
+              // print(isSelected);
+            },
+            isSelected: isSelected,
+            children: [
+              Text('Option 1'),
+              Text('Option 2'),
+              Text('Option 3'),
+              Text('Option 4'),
+            ],
           ),
-
-          // gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          //   maxCrossAxisExtent: 50,
-          //   mainAxisSpacing: 20,
-          //   childAspectRatio: 1 / 100,
-          //   crossAxisSpacing: 20,
-          // ),
-          children: [
-            GestureDetector(
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    backgroundColor: Colors.green,
-                    duration: Duration(milliseconds: 2500),
-                    action: SnackBarAction(label: 'Undo', onPressed: () {}),
-                    content: Text('Hello, I am Snack Bar'),
-                  ),
-                );
-              },
-              child: Container(
-                color: Colors.white,
-                width: 300,
-                height: 300,
-                child: Center(child: Text('SnackBar')),
-              ),
+          Center(
+            child: Text(
+              'Option ${isSelected.indexOf(isSelected.firstWhere((e) => e)) + 1} has been selected',
             ),
-            GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      icon: Icon(Icons.warning, color: Colors.red),
-                      title: Text('Warning'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text('Close'),
-                        ),
-                      ],
-                      content: Text('I am Alert Dialog'),
-                    );
-                  },
-                );
-              },
-              child: Container(
-                color: Colors.black,
-                width: 300,
-                height: 300,
-                child: Center(
-                  child: Text(
-                    'Basic Alert Dialog',
-                    style: TextStyle(color: Colors.white),
-                  ),
+          ),
+          DropdownMenu(
+            onSelected: (value) {
+              setState(() {
+                selected = value!;
+              });
+            },
+            dropdownMenuEntries: [
+              DropdownMenuEntry(value: '', label: 'Please select an option'),
+              DropdownMenuEntry(
+                value: 'Apple',
+                label: 'Apple',
+                leadingIcon: Icon(Icons.apple),
+              ),
+              DropdownMenuEntry(
+                value: 'Banana',
+                label: 'Banana',
+                leadingIcon: Icon(Icons.apple),
+              ),
+              DropdownMenuEntry(
+                value: 'Carrot',
+                label: 'Carrot',
+                leadingIcon: Icon(Icons.apple),
+              ),
+              DropdownMenuEntry(
+                value: 'Pine',
+                label: 'Pine',
+                leadingIcon: Icon(Icons.apple),
+              ),
+            ],
+          ),
+          selected.isEmpty
+              ? Text('Please Select an option')
+              : Text('This is the Fruit selected: $selected'),
+
+          Switch(
+            value: switchValue,
+            onChanged: (value) {
+              setState(() {
+                // switchValue = !value;
+                switchValue = !switchValue;
+              });
+            },
+          ),
+          Text('Light is ${switchValue ? 'ON' : 'OFF'}'),
+
+          RadioMenuButton(
+            value: 'Male',
+            groupValue: gender,
+            onChanged: (value) {
+              setState(() {
+                gender = value!;
+              });
+            },
+            child: Text('Male'),
+          ),
+          RadioMenuButton(
+            value: 'Female',
+            groupValue: gender,
+            onChanged: (value) {
+              setState(() {
+                gender = value!;
+              });
+            },
+            child: Text('Female'),
+          ),
+          Text('You are a $gender'),
+          Checkbox(
+            value: isChecked,
+            onChanged: (value) {
+              setState(() {
+                isChecked = value!;
+              });
+            },
+          ),
+          Text(
+            'You have ${isChecked ? '' : 'not'} accepted the terms and conditions',
+          ),
+          SizedBox(height: 20),
+          GestureDetector(
+            onTap: () async {
+              print('hii');
+              DateTime? dateSelect = await showDatePicker(
+                context: context,
+                firstDate: DateTime(1950),
+                lastDate: DateTime(2050),
+                builder: (context, child) {
+                  return DatePickerDialog(
+                    firstDate: DateTime(1950),
+                    lastDate: DateTime(2050),
+                  );
+                },
+              );
+              setState(() {
+                dateControl.text =
+                    '${dateSelect!.day}-${months[dateSelect.month - 1]}-${dateSelect.year.toString()}';
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(border: Border.all(width: 1)),
+              child: TextField(
+                controller: dateControl,
+                enabled: false,
+                decoration: InputDecoration(
+                  suffixIcon: Icon(Icons.calendar_month),
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                showCupertinoDialog(
-                  context: context,
-
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                      title: Text('Warning'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text('Close'),
-                        ),
-                      ],
-                      content: Text('Hello, I am Alert Dialog'),
-                    );
-                  },
-                );
-              },
-              child: Container(
-                color: Colors.black,
-                width: 300,
-                height: 300,
-                child: Center(
-                  child: Text(
-                    'Cupertino Alert Dialog',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                showBottomSheet(
-                  enableDrag: false,
-                  constraints: BoxConstraints(
-                    maxHeight: 500,
-                    maxWidth: double.infinity,
-                  ),
-                  backgroundColor: Colors.green,
-                  context: context,
-                  builder: (context) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: Icon(Icons.close),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-              child: Container(
-                color: Colors.yellow,
-                width: 300,
-                height: 300,
-                child: Center(child: Text('Bottom Sheet')),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                printSomething();
-              },
-              child: Container(
-                color: Colors.blue,
-                width: 300,
-                height: 300,
-                child: Center(child: Text('Circular Progress Indicator')),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                showCupertinoModalPopup(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoActionSheet(
-                      cancelButton: TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text("Close"),
-                      ),
-                      title: Text('Select an Option'),
-                      message: Container(width: double.infinity, height: 700),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text('Next'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text('Previous'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              child: Container(
-                color: Colors.grey,
-                width: 300,
-                height: 300,
-                child: Center(child: Text('Cupertino Sheet')),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {},
-              child: Container(color: Colors.indigo, width: 300, height: 300),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
+
+//     children: [GridView(
+//       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//         crossAxisCount: 3,
+//         // mainAxisExtent: 2,
+//         crossAxisSpacing: 20,
+//         mainAxisSpacing: 20,
+//       ),
+
+//       // gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+//       //   maxCrossAxisExtent: 50,
+//       //   mainAxisSpacing: 20,
+//       //   childAspectRatio: 1 / 100,
+//       //   crossAxisSpacing: 20,
+//       // ),
+//       children: [
+//         GestureDetector(
+//           onTap: () {
+//             ScaffoldMessenger.of(context).showSnackBar(
+//               SnackBar(
+//                 backgroundColor: Colors.green,
+//                 duration: Duration(milliseconds: 2500),
+//                 action: SnackBarAction(label: 'Undo', onPressed: () {}),
+//                 content: Text('Hello, I am Snack Bar'),
+//               ),
+//             );
+//           },
+//           child: Container(
+//             color: Colors.white,
+//             width: 300,
+//             height: 300,
+//             child: Center(child: Text('SnackBar')),
+//           ),
+//         ),
+//         GestureDetector(
+//           onTap: () {
+//             showDialog(
+//               context: context,
+//               builder: (context) {
+//                 return AlertDialog(
+//                   shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(20),
+//                   ),
+//                   icon: Icon(Icons.warning, color: Colors.red),
+//                   title: Text('Warning'),
+//                   actions: [
+//                     TextButton(
+//                       onPressed: () {
+//                         Navigator.pop(context);
+//                       },
+//                       child: Text('Close'),
+//                     ),
+//                   ],
+//                   content: Text('I am Alert Dialog'),
+//                 );
+//               },
+//             );
+//           },
+//           child: Container(
+//             color: Colors.black,
+//             width: 300,
+//             height: 300,
+//             child: Center(
+//               child: Text(
+//                 'Basic Alert Dialog',
+//                 style: TextStyle(color: Colors.white),
+//               ),
+//             ),
+//           ),
+//         ),
+//         GestureDetector(
+//           onTap: () {
+//             showCupertinoDialog(
+//               context: context,
+
+//               builder: (context) {
+//                 return CupertinoAlertDialog(
+//                   title: Text('Warning'),
+//                   actions: [
+//                     TextButton(
+//                       onPressed: () {
+//                         Navigator.pop(context);
+//                       },
+//                       child: Text('Close'),
+//                     ),
+//                   ],
+//                   content: Text('Hello, I am Alert Dialog'),
+//                 );
+//               },
+//             );
+//           },
+//           child: Container(
+//             color: Colors.black,
+//             width: 300,
+//             height: 300,
+//             child: Center(
+//               child: Text(
+//                 'Cupertino Alert Dialog',
+//                 style: TextStyle(color: Colors.white),
+//               ),
+//             ),
+//           ),
+//         ),
+//         GestureDetector(
+//           onTap: () {
+//             showBottomSheet(
+//               enableDrag: false,
+//               constraints: BoxConstraints(
+//                 maxHeight: 500,
+//                 maxWidth: double.infinity,
+//               ),
+//               backgroundColor: Colors.green,
+//               context: context,
+//               builder: (context) {
+//                 return Container(
+//                   decoration: BoxDecoration(
+//                     borderRadius: BorderRadius.only(
+//                       topLeft: Radius.circular(20),
+//                       topRight: Radius.circular(20),
+//                     ),
+//                   ),
+//                   child: Column(
+//                     children: [
+//                       Row(
+//                         children: [
+//                           IconButton(
+//                             onPressed: () {
+//                               Navigator.pop(context);
+//                             },
+//                             icon: Icon(Icons.close),
+//                           ),
+//                         ],
+//                       ),
+//                     ],
+//                   ),
+//                 );
+//               },
+//             );
+//           },
+//           child: Container(
+//             color: Colors.yellow,
+//             width: 300,
+//             height: 300,
+//             child: Center(child: Text('Bottom Sheet')),
+//           ),
+//         ),
+//         GestureDetector(
+//           onTap: () {
+//             printSomething();
+//           },
+//           child: Container(
+//             color: Colors.blue,
+//             width: 300,
+//             height: 300,
+//             child: Center(child: Text('Circular Progress Indicator')),
+//           ),
+//         ),
+//         GestureDetector(
+//           onTap: () {
+//             showCupertinoModalPopup(
+//               context: context,
+//               builder: (context) {
+//                 return CupertinoActionSheet(
+//                   cancelButton: TextButton(
+//                     onPressed: () {
+//                       Navigator.pop(context);
+//                     },
+//                     child: Text("Close"),
+//                   ),
+//                   title: Text('Select an Option'),
+//                   message: Container(width: double.infinity, height: 700),
+//                   actions: [
+//                     TextButton(
+//                       onPressed: () {
+//                         Navigator.pop(context);
+//                       },
+//                       child: Text('Next'),
+//                     ),
+//                     TextButton(
+//                       onPressed: () {
+//                         Navigator.pop(context);
+//                       },
+//                       child: Text('Previous'),
+//                     ),
+//                   ],
+//                 );
+//               },
+//             );
+//           },
+//           child: Container(
+//             color: Colors.grey,
+//             width: 300,
+//             height: 300,
+//             child: Center(child: Text('Cupertino Sheet')),
+//           ),
+//         ),
+//         GestureDetector(
+//           onTap: () {},
+//           child: Container(color: Colors.indigo, width: 300, height: 300),
+//         ),
+//       ],
+//     ),
+//  ]
+
+Future<void> doSomething() async {}
